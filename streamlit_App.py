@@ -62,6 +62,23 @@ SEVERITY_MAP = {
 }
 
 # ---------------------------------------------------------
+# SAFE SCALING FUNCTION
+# ---------------------------------------------------------
+def safe_scale(data):
+    """
+    Accepts a list (single patient) or DataFrame (batch),
+    ensures correct shape and feature names for scaler.
+    """
+    if isinstance(data, list):  # single patient
+        df = pd.DataFrame([data], columns=FEATURE_COLUMNS)
+    elif isinstance(data, pd.DataFrame):  # batch
+        df = data[FEATURE_COLUMNS].copy()
+    else:
+        raise ValueError("Input must be list or DataFrame")
+    
+    return scaler.transform(df)
+
+# ---------------------------------------------------------
 # PREDICTION FUNCTION
 # ---------------------------------------------------------
 def predict_severity(data):
@@ -69,12 +86,9 @@ def predict_severity(data):
         st.error("❌ Model or scaler not loaded.")
         return None
 
-    data = np.array(data).reshape(1, -1)
-    data_scaled = scaler.transform(data)
-
+    data_scaled = safe_scale(data)
     pred = model.predict(data_scaled)
     severity_class = np.argmax(pred)
-
     return severity_class
 
 # ---------------------------------------------------------
@@ -132,7 +146,8 @@ if csv and model is not None:
     if missing:
         st.error(f"Your CSV is missing columns: {missing}")
     else:
-        X_scaled = scaler.transform(df[FEATURE_COLUMNS])
+        # Safe scaling using wrapper
+        X_scaled = safe_scale(df)
         preds = model.predict(X_scaled)
         df["predicted_class"] = np.argmax(preds, axis=1)
         df["severity"] = df["predicted_class"].map(SEVERITY_MAP)
@@ -141,4 +156,3 @@ if csv and model is not None:
 
         csv_output = df.to_csv(index=False).encode("utf-8")
         st.download_button("⬇ Download Predictions", csv_output, "predictions.csv", "text/csv")
-
