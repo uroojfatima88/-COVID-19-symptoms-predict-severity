@@ -129,7 +129,7 @@ if model is not None:
 
 if st.button("Predict Severity"):
     sample = build_input_vector([
-        age, gender, vaccination,
+       age, gender, vaccination_status,
         fever, cough, fatigue, sob,
         smell, headache,
         diabetes, hypertension, heart_disease, asthma, cancer
@@ -163,6 +163,7 @@ if csv:
     st.dataframe(df)
 
     st.download_button("⬇ Download Predictions", df.to_csv(index=False), "predictions.csv")
+
 
 
 
