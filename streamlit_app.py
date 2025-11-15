@@ -3,7 +3,7 @@
 # Save file and run: streamlit run streamlit_app.py
 
 
-    import streamlit as st
+import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -442,3 +442,4 @@ if batch_file is not None:
 # Footer
 st.markdown("---")
 st.markdown("Made with ❤️ — cute ANN Streamlit app. Customize colors, logos, or behaviors for your project presentation!")
+
