@@ -62,6 +62,19 @@ SEVERITY_MAP = {
 }
 
 # ---------------------------------------------------------
+# PREPROCESSING FUNCTION
+# ---------------------------------------------------------
+def preprocess_input(df):
+    """Convert categorical/string columns to numeric"""
+    df = df.copy()
+    if 'gender' in df.columns:
+        df['gender'] = df['gender'].map({0:0, 1:1, 'Female':0, 'Male':1})
+    if 'vaccination_status' in df.columns:
+        df['vaccination_status'] = df['vaccination_status'].map({0:0,1:1,'No':0,'Yes':1})
+    # Add any other categorical mappings if needed
+    return df
+
+# ---------------------------------------------------------
 # SAFE SCALING FUNCTION
 # ---------------------------------------------------------
 def safe_scale(data):
@@ -69,11 +82,13 @@ def safe_scale(data):
     Accepts a list (single patient) or DataFrame (batch),
     returns scaled NumPy array, bypassing feature name checks.
     """
-    if isinstance(data, list):  # single patient
+    if isinstance(data, list):
         df = pd.DataFrame([data], columns=FEATURE_COLUMNS)
+        df = preprocess_input(df)
         return scaler.transform(df.to_numpy())
-    elif isinstance(data, pd.DataFrame):  # batch
+    elif isinstance(data, pd.DataFrame):
         df = data[FEATURE_COLUMNS].copy()
+        df = preprocess_input(df)
         return scaler.transform(df.to_numpy())
     else:
         raise ValueError("Input must be list or DataFrame")
@@ -85,7 +100,6 @@ def predict_severity(data):
     if model is None or scaler is None:
         st.error("❌ Model or scaler not loaded.")
         return None
-
     data_scaled = safe_scale(data)
     pred = model.predict(data_scaled)
     severity_class = np.argmax(pred)
@@ -102,8 +116,8 @@ if model is not None:
 
     with col1:
         age = st.number_input("Age", 1, 120, 30)
-        gender = st.selectbox("Gender (0=Female, 1=Male)", [0, 1])
-        vaccination_status = st.selectbox("Vaccinated", [0, 1])
+        gender = st.selectbox("Gender", ['Female', 'Male'])
+        vaccination_status = st.selectbox("Vaccinated", ['No', 'Yes'])
         fever = st.selectbox("Fever", [0, 1])
         cough = st.selectbox("Cough", [0, 1])
 
@@ -118,41 +132,4 @@ if model is not None:
         hypertension = st.selectbox("Hypertension", [0, 1])
         heart_disease = st.selectbox("Heart Disease", [0, 1])
         asthma = st.selectbox("Asthma", [0, 1])
-        cancer = st.selectbox("Cancer", [0, 1])
-
-    if st.button("Predict Severity"):
-        sample = [
-            age, gender, vaccination_status, fever, cough,
-            fatigue, sob, smell, headache,
-            diabetes, hypertension, heart_disease, asthma, cancer
-        ]
-
-        severity = predict_severity(sample)
-
-        if severity is not None:
-            st.success(f"### Patient Severity: {SEVERITY_MAP[severity]}")
-
-# ---------------------------------------------------------
-# BATCH CSV PREDICTION
-# ---------------------------------------------------------
-st.header("📊 Batch Prediction (CSV Upload)")
-
-csv = st.file_uploader("Upload CSV for prediction", type=["csv"])
-
-if csv and model is not None:
-    df = pd.read_csv(csv)
-
-    missing = [col for col in FEATURE_COLUMNS if col not in df.columns]
-    if missing:
-        st.error(f"Your CSV is missing columns: {missing}")
-    else:
-        # Safe scaling using wrapper
-        X_scaled = safe_scale(df)
-        preds = model.predict(X_scaled)
-        df["predicted_class"] = np.argmax(preds, axis=1)
-        df["severity"] = df["predicted_class"].map(SEVERITY_MAP)
-
-        st.dataframe(df)
-
-        csv_output = df.to_csv(index=False).encode("utf-8")
-        st.download_button("⬇ Download Predictions", csv_output, "predictions.csv", "text/csv")
+        cancer
