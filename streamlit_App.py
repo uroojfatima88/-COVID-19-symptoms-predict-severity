@@ -11,7 +11,7 @@ import os
 st.set_page_config(page_title="COVID Severity Predictor", page_icon="🩺", layout="wide")
 
 st.title("🩺 COVID-19 Severity Prediction App")
-st.write("Automatically loads your trained ANN model and scaler.")
+
 
 # ---------------------------------------------------------
 # LOAD MODEL & SCALER
@@ -107,19 +107,19 @@ with col1:
     ])
 
 with col2:
-    fever = st.selectbox("Fever", [0, 1])
-    cough = st.selectbox("Cough", [0, 1])
-    fatigue = st.selectbox("Fatigue", [0, 1])
-    sob = st.selectbox("Shortness of Breath", [0, 1])
+    fever = st.selectbox("Fever", [no, yes])
+    cough = st.selectbox("Cough", [no, yes])
+    fatigue = st.selectbox("Fatigue", [no, yes])
+    sob = st.selectbox("Shortness of Breath", [no, yes])
 
 with col3:
-    smell = st.selectbox("Loss of Smell", [0, 1])
-    headache = st.selectbox("Headache", [0, 1])
-    diabetes = st.selectbox("Diabetes", [0, 1])
-    hypertension = st.selectbox("Hypertension", [0, 1])
-    heart_disease = st.selectbox("Heart Disease", [0, 1])
-    asthma = st.selectbox("Asthma", [0, 1])
-    cancer = st.selectbox("Cancer", [0, 1])
+    smell = st.selectbox("Loss of Smell", [no, yes])
+    headache = st.selectbox("Headache", [no, yes])
+    diabetes = st.selectbox("Diabetes", [no, yes])
+    hypertension = st.selectbox("Hypertension", [no, yes])
+    heart_disease = st.selectbox("Heart Disease", [no, yes])
+    asthma = st.selectbox("Asthma", [no, yes])
+    cancer = st.selectbox("Cancer", [no, yes])
 
 if st.button("Predict Severity"):
     sample = build_input_vector([
@@ -157,3 +157,4 @@ if csv:
     st.dataframe(df)
 
     st.download_button("⬇ Download Predictions", df.to_csv(index=False), "predictions.csv")
+
