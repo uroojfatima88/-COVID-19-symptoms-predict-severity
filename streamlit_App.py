@@ -132,4 +132,45 @@ if model is not None:
         hypertension = st.selectbox("Hypertension", [0, 1])
         heart_disease = st.selectbox("Heart Disease", [0, 1])
         asthma = st.selectbox("Asthma", [0, 1])
-        cancer
+        cancer = st.selectbox("Cancer", [0, 1])
+
+    if st.button("Predict Severity"):
+        sample = [
+            age,
+            gender,
+            vaccination_status,
+            fever, cough,
+            fatigue, sob, smell, headache,
+            diabetes, hypertension, heart_disease, asthma, cancer
+        ]
+
+        severity = predict_severity(sample)
+
+        if severity is not None:
+            st.success(f"### Patient Severity: {SEVERITY_MAP[severity]}")
+
+# ---------------------------------------------------------
+# BATCH CSV PREDICTION
+# ---------------------------------------------------------
+st.header("📊 Batch Prediction (CSV Upload)")
+
+csv = st.file_uploader("Upload CSV for prediction", type=["csv"])
+
+if csv and model is not None:
+    df = pd.read_csv(csv)
+
+    missing = [col for col in FEATURE_COLUMNS if col not in df.columns]
+    if missing:
+        st.error(f"Your CSV is missing columns: {missing}")
+    else:
+        df = preprocess_input(df)
+        X_scaled = safe_scale(df)
+        preds = model.predict(X_scaled)
+        df["predicted_class"] = np.argmax(preds, axis=1)
+        df["severity"] = df["predicted_class"].map(SEVERITY_MAP)
+
+        st.dataframe(df)
+
+        csv_output = df.to_csv(index=False).encode("utf-8")
+        st.download_button("⬇ Download Predictions", csv_output, "predictions.csv", "text/csv")
+
