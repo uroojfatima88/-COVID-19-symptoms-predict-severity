@@ -24,7 +24,7 @@ model, scaler = None, None
 try:
     model = tf.keras.models.load_model(MODEL_PATH)
     scaler = joblib.load(SCALER_PATH)
-    st.success("✅ Model & Scaler Loaded Successfully!")
+    
 except:
     st.error("❌ Could not load model or scaler.")
     st.stop()
@@ -163,6 +163,7 @@ if csv:
     st.dataframe(df)
 
     st.download_button("⬇ Download Predictions", df.to_csv(index=False), "predictions.csv")
+
 
 
 
