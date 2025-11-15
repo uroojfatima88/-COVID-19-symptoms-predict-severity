@@ -1,8 +1,9 @@
-tensorflow==2.15.0
+tensorflow
 numpy
 pandas
 scikit-learn
 streamlit
 joblib
+
 
 
