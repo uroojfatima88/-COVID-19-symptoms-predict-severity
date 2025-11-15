@@ -67,16 +67,16 @@ SEVERITY_MAP = {
 def safe_scale(data):
     """
     Accepts a list (single patient) or DataFrame (batch),
-    ensures correct shape and feature names for scaler.
+    returns scaled NumPy array, bypassing feature name checks.
     """
     if isinstance(data, list):  # single patient
         df = pd.DataFrame([data], columns=FEATURE_COLUMNS)
+        return scaler.transform(df.to_numpy())
     elif isinstance(data, pd.DataFrame):  # batch
         df = data[FEATURE_COLUMNS].copy()
+        return scaler.transform(df.to_numpy())
     else:
         raise ValueError("Input must be list or DataFrame")
-    
-    return scaler.transform(df)
 
 # ---------------------------------------------------------
 # PREDICTION FUNCTION
