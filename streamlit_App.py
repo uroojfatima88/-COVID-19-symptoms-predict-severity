@@ -95,31 +95,34 @@ def predict_severity(vector):
 # ---------------------------------------------------------
 st.header("🔍 Predict Severity for One Patient")
 
-col1, col2, col3 = st.columns(3)
+if model is not None:
 
-with col1:
-    age = st.number_input("Age", 1, 120, 30)
-    gender = st.selectbox("Gender", ["Male", "Female", "Other"])
-    vaccination = st.selectbox("Vaccination Status", [
-        "Fully Vaccinated",
-        "Partially Vaccinated",
-        "Unvaccinated"
-    ])
+    col1, col2, col3 = st.columns(3)
 
-with col2:
-    fever = st.selectbox("Fever", [no, yes])
-    cough = st.selectbox("Cough", [no, yes])
-    fatigue = st.selectbox("Fatigue", [no, yes])
-    sob = st.selectbox("Shortness of Breath", [no, yes])
+    with col1:
+        age = st.number_input("Age", 1, 120, 30)
+        gender = st.selectbox("Gender", ["Female", "Male", "Other"])
+        vaccination_status = st.selectbox("Vaccination Status", [
+            "Fully Vaccinated",
+            "Partially Vaccinated",
+            "Unvaccinated"
+        ])
+        fever = 1 if st.selectbox("Fever", ["No", "Yes"]) == "Yes" else 0
+        cough = 1 if st.selectbox("Cough", ["No", "Yes"]) == "Yes" else 0
 
-with col3:
-    smell = st.selectbox("Loss of Smell", [no, yes])
-    headache = st.selectbox("Headache", [no, yes])
-    diabetes = st.selectbox("Diabetes", [no, yes])
-    hypertension = st.selectbox("Hypertension", [no, yes])
-    heart_disease = st.selectbox("Heart Disease", [no, yes])
-    asthma = st.selectbox("Asthma", [no, yes])
-    cancer = st.selectbox("Cancer", [no, yes])
+    with col2:
+        fatigue = 1 if st.selectbox("Fatigue", ["No", "Yes"]) == "Yes" else 0
+        sob = 1 if st.selectbox("Shortness of Breath", ["No", "Yes"]) == "Yes" else 0
+        smell = 1 if st.selectbox("Loss of Smell", ["No", "Yes"]) == "Yes" else 0
+        headache = 1 if st.selectbox("Headache", ["No", "Yes"]) == "Yes" else 0
+
+    with col3:
+        diabetes = 1 if st.selectbox("Diabetes", ["No", "Yes"]) == "Yes" else 0
+        hypertension = 1 if st.selectbox("Hypertension", ["No", "Yes"]) == "Yes" else 0
+        heart_disease = 1 if st.selectbox("Heart Disease", ["No", "Yes"]) == "Yes" else 0
+        asthma = 1 if st.selectbox("Asthma", ["No", "Yes"]) == "Yes" else 0
+        cancer = 1 if st.selectbox("Cancer", ["No", "Yes"]) == "Yes" else 0
+
 
 if st.button("Predict Severity"):
     sample = build_input_vector([
@@ -157,4 +160,5 @@ if csv:
     st.dataframe(df)
 
     st.download_button("⬇ Download Predictions", df.to_csv(index=False), "predictions.csv")
+
 
