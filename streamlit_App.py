@@ -102,11 +102,11 @@ if model is not None:
     with col1:
         age = st.number_input("Age", 1, 120, 30)
         gender = st.selectbox("Gender", ["Female", "Male", "Other"])
-        vaccination_status = st.selectbox("Vaccination Status", [
-    "Fully Vaccinated",
-    "Partially Vaccinated",
-    "Unvaccinated"
-])
+        vaccination_status = st.selectbox(
+    "Vaccination Status",
+    ["Fully Vaccinated", "Partially Vaccinated", "Unvaccinated"]
+)
+
 
 
         
@@ -163,6 +163,7 @@ if csv:
     st.dataframe(df)
 
     st.download_button("⬇ Download Predictions", df.to_csv(index=False), "predictions.csv")
+
 
 
 
