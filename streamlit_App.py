@@ -98,7 +98,7 @@ st.header("🔍 Predict Severity for One Patient")
 if model is not None:
 
     col1, col2, col3 = st.columns(3)
-
+#demographics 
     with col1:
         age = st.number_input("Age", 1, 120, 30)
         gender = st.selectbox("Gender", ["Female", "Male", "Other"])
@@ -109,7 +109,7 @@ if model is not None:
 
 
 
-        
+        #SYMPTOMS
         fever = 1 if st.selectbox("Fever", ["No", "Yes"]) == "Yes" else 0
         cough = 1 if st.selectbox("Cough", ["No", "Yes"]) == "Yes" else 0
 
@@ -118,7 +118,7 @@ if model is not None:
         sob = 1 if st.selectbox("Shortness of Breath", ["No", "Yes"]) == "Yes" else 0
         smell = 1 if st.selectbox("Loss of Smell", ["No", "Yes"]) == "Yes" else 0
         headache = 1 if st.selectbox("Headache", ["No", "Yes"]) == "Yes" else 0
-
+#PRE-EXISTING CONDITIONS
     with col3:
         diabetes = 1 if st.selectbox("Diabetes", ["No", "Yes"]) == "Yes" else 0
         hypertension = 1 if st.selectbox("Hypertension", ["No", "Yes"]) == "Yes" else 0
@@ -163,6 +163,7 @@ if csv:
     st.dataframe(df)
 
     st.download_button("⬇ Download Predictions", df.to_csv(index=False), "predictions.csv")
+
 
 
 
